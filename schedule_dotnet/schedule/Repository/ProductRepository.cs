@@ -41,4 +41,13 @@ public class ProductRepository
 
         await connection.ExecuteAsync(sql, new { item.Status, item.Percentual, item.Id });
     }
+
+    public async Task ResetToValidationAsync()
+    {
+        using var connection = _context.CreateConnection();
+
+        const string sql = "UPDATE Promocoes SET Status = 'Pending' WHERE Status IN ('Approved', 'LowDiscount')";
+
+        await connection.ExecuteAsync(sql);
+    }
 }

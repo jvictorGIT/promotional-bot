@@ -25,3 +25,23 @@ export async function fetchPromocoes(): Promise<Promocao[]> {
   const data = await response.json()
   return toCamelCase<Promocao[]>(data)
 }
+
+export async function fetchThreshold(): Promise<number> {
+  const response = await fetch(`${API_BASE_URL}/api/configuracoes/threshold`)
+  if (!response.ok) {
+    throw new Error(`Falha ao buscar threshold (HTTP ${response.status})`)
+  }
+  const data = await response.json()
+  return data.threshold as number
+}
+
+export async function updateThreshold(threshold: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/configuracoes/threshold`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ threshold }),
+  })
+  if (!response.ok) {
+    throw new Error(`Falha ao salvar threshold (HTTP ${response.status})`)
+  }
+}

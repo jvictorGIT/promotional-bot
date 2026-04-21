@@ -25,6 +25,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<ContextDb>();
 builder.Services.AddTransient<ProductRepository>();
+builder.Services.AddTransient<ConfiguracaoRepository>();
 builder.Services.AddTransient<ScraperService>();
 builder.Services.AddTransient<ValidacaoService>();
 builder.Services.AddTransient<ScheduleService>();

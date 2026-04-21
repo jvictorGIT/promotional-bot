@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchPromocoes } from './services/api'
+import { fetchPromocoes, fetchThreshold, updateThreshold } from './services/api'
 import PromocaoCard from './components/PromocaoCard'
 import type { Promocao } from './types/promocao'
 
@@ -51,6 +51,9 @@ export default function App() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [thresholdInput, setThresholdInput] = useState<string>('50')
+  const [savingThreshold, setSavingThreshold] = useState<boolean>(false)
+  const [thresholdSaved, setThresholdSaved] = useState<boolean>(false)
 
   async function load() {
     try {
@@ -66,9 +69,36 @@ export default function App() {
     }
   }
 
+  async function loadThreshold() {
+    try {
+      const value = await fetchThreshold()
+      setThresholdInput(String(Math.round(value * 100)))
+    } catch {
+      // mantém o valor padrão de 50%
+    }
+  }
+
+  async function handleSaveThreshold() {
+    const parsed = parseInt(thresholdInput, 10)
+    if (isNaN(parsed) || parsed < 0 || parsed > 100) return
+
+    try {
+      setSavingThreshold(true)
+      await updateThreshold(parsed / 100)
+      setThresholdInput(String(parsed))
+      setThresholdSaved(true)
+      setTimeout(() => setThresholdSaved(false), 2000)
+      setTimeout(() => load(), 1500)
+    } catch {
+      // silencia erro pontual
+    } finally {
+      setSavingThreshold(false)
+    }
+  }
+
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     load()
+    loadThreshold()
   }, [])
 
   return (
@@ -76,9 +106,6 @@ export default function App() {
       <header className="mx-auto max-w-6xl px-6 pt-12 pb-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <span className="inline-flex items-center rounded-full border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-1 text-xs font-medium text-fuchsia-200">
-              Sales Bot · Aprovadas
-            </span>
             <h1 className="mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">
               PromotionalBot
             </h1>
@@ -92,13 +119,37 @@ export default function App() {
               </div>
             )}
           </div>
-          <button
-            onClick={load}
-            disabled={loading}
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
-          >
-            Atualizar
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2">
+              <label className="text-sm text-gray-400 whitespace-nowrap">
+                Desconto mínimo
+              </label>
+              <input
+                type="text"
+                min={0}
+                max={100}
+                value={thresholdInput}
+                onChange={(e) => setThresholdInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveThreshold()}
+                className="w-16 rounded-lg bg-white/10 px-2 py-1 text-center text-sm font-medium text-white outline-none focus:ring-1 focus:ring-fuchsia-500"
+              />
+              <span className="text-sm text-gray-400">%</span>
+              <button
+                onClick={handleSaveThreshold}
+                disabled={savingThreshold}
+                className="rounded-lg bg-fuchsia-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-fuchsia-500 disabled:opacity-40"
+              >
+                {thresholdSaved ? 'Salvo ✓' : 'Salvar'}
+              </button>
+            </div>
+            <button
+              onClick={load}
+              disabled={loading}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
+            >
+              Atualizar
+            </button>
+          </div>
         </div>
       </header>
 
