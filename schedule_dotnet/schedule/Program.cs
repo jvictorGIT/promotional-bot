@@ -6,6 +6,19 @@ using schedule.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string CorsPolicy = "AllowFrontend";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
@@ -33,8 +46,9 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+app.UseCors(CorsPolicy);
 app.UseHangfireDashboard("/hangfire");
+app.MapControllers();
 
 var scheduler = app.Services.GetRequiredService<ScheduleService>();
 scheduler.AgendarJobs();

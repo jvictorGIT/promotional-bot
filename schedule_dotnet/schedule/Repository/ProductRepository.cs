@@ -21,6 +21,18 @@ public class ProductRepository
         return await connection.QueryAsync<jsonModel>(sql, new { Status = "Pending" });
     }
 
+    public async Task<IEnumerable<jsonModel>> GetApprovedAsync()
+    {
+        using var connection = _context.CreateConnection();
+
+        const string sql = @"SELECT Id, Sku, Name, PriceDe, PricePor, Link, ImageUrl, Status, Percentual
+                             FROM Promocoes
+                             WHERE Status = @Status
+                             ORDER BY Percentual DESC";
+
+        return await connection.QueryAsync<jsonModel>(sql, new { Status = "Approved" });
+    }
+
     public async Task UpdateAsync(jsonModel item)
     {
         using var connection = _context.CreateConnection();

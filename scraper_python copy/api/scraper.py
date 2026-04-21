@@ -18,7 +18,7 @@ async def executar_scraper():
 
         await page.goto("https://www.amazon.com.br/s?k=livros+classicos&i=stripbooks&crid=1GPA6F811WTXY&sprefix=livros+classi%2Cstripbooks%2C216&ref=nb_sb_ss_ts-doa-p_1_13")
 
-        elementos = page.locator('[data-component-type="s-search-result"]')
+        elementos = page.locator('[data-component-type="s-search-result"]')        
 
         while True:
             for i in range(await elementos.count()):
@@ -44,9 +44,9 @@ async def executar_scraper():
                         await preco_antigo_locator.first.inner_text()
                         if await preco_antigo_locator.count() > 0
                         else None
-                    )
+                    )           
 
-                    # Extracao do SKU
+                    # Extracao do SKU                          
                     decoded_link = unquote(link_locator)
                     match = re.search(r'/dp/(\w+)', decoded_link)
                     sku = match.group(1) if match else "Não encontrado"
@@ -69,11 +69,11 @@ async def executar_scraper():
 
             await next_button.click()
             pagina += 1
-
+        
             time.sleep(2)
 
             if pagina > 10:
                 await browser.close()
                 break
-
-
+        
+            
