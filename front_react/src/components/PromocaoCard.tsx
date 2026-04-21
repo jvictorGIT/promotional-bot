@@ -1,11 +1,16 @@
 import { useState } from 'react'
+import type { Promocao } from '../types/promocao'
+
+interface PromocaoCardProps {
+  promocao: Promocao
+}
 
 const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
   currency: 'BRL',
 })
 
-function formatPercent(percentual) {
+function formatPercent(percentual: number): string {
   const value = Number(percentual) <= 1 ? Number(percentual) * 100 : Number(percentual)
   return `${Math.round(value)}%`
 }
@@ -20,7 +25,7 @@ function ImagePlaceholder() {
   )
 }
 
-export default function PromocaoCard({ promocao }) {
+export default function PromocaoCard({ promocao }: PromocaoCardProps) {
   const { name, priceDe, pricePor, link, percentual, imageUrl } = promocao
   const [imgError, setImgError] = useState(false)
 

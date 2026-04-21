@@ -1,5 +1,15 @@
+import os
 import pyodbc
 import re
+
+DEFAULT_CONN_STR = (
+    'Driver={ODBC Driver 18 for SQL Server};'
+    'Server=localhost;'
+    'Database=Sales_Bot;'
+    'UID=sa;'
+    'PWD=!Jvictor22;'
+    'TrustServerCertificate=yes;'
+)
 
 def limpar_preco(preco_str):
 
@@ -17,15 +27,8 @@ def limpar_preco(preco_str):
         return 0.0
 
 def salvar_no_banco(dados_item):
-    conn_str = (
-        'Driver={ODBC Driver 18 for SQL Server};'
-        'Server=localhost;'
-        'Database=Sales_Bot;'
-        'UID=sa;'
-        'PWD=!Jvictor22;' 
-        'TrustServerCertificate=yes;'
-    )
-    
+    conn_str = os.environ.get('DATABASE_URL', DEFAULT_CONN_STR)
+
     try:
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()

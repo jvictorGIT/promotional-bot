@@ -75,3 +75,16 @@ release/
 ########################################
 *.tmp
 *.swp
+
+########################################
+# DOCKER
+########################################
+# Ignora todos os Dockerfiles e o arquivo de orquestração
+Dockerfile
+docker-compose.yml
+
+########################################
+# CONFIGURAÇÕES DE BANCO / APP
+########################################
+# Ignora o arquivo principal de configuração do .NET
+appsettings.json

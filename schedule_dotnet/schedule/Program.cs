@@ -47,7 +47,10 @@ builder.Services.AddHangfireServer();
 var app = builder.Build();
 
 app.UseCors(CorsPolicy);
-app.UseHangfireDashboard("/hangfire");
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new schedule.AllowAllDashboardAuthorizationFilter() }
+});
 app.MapControllers();
 
 var scheduler = app.Services.GetRequiredService<ScheduleService>();
