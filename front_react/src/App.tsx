@@ -6,8 +6,8 @@ import type { Promocao } from './types/promocao'
 function Spinner() {
   return (
     <div className="flex flex-col items-center gap-4 py-20">
-      <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/10 border-t-fuchsia-500" />
-      <p className="text-sm text-gray-400">Buscando as melhores promoções…</p>
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/10 border-t-orange-500" />
+      <p className="text-sm text-zinc-400">Buscando as melhores promoções…</p>
     </div>
   )
 }
@@ -19,7 +19,7 @@ function EmptyState() {
       <h2 className="text-xl font-semibold text-white">
         Nenhuma promoção aprovada no momento
       </h2>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-zinc-400">
         Assim que o robô encontrar descontos acima do limite, eles aparecerão aqui.
       </p>
     </div>
@@ -33,10 +33,10 @@ interface ErrorStateProps {
 
 function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/5 px-8 py-16 text-center">
+    <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-red-500/30 bg-red-500/5 px-8 py-16 text-center">
       <div className="text-5xl">⚠️</div>
       <h2 className="text-xl font-semibold text-white">Algo deu errado</h2>
-      <p className="text-sm text-rose-200/80">{message}</p>
+      <p className="text-sm text-red-200/80">{message}</p>
       <button
         onClick={onRetry}
         className="mt-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
@@ -102,27 +102,33 @@ export default function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(170,59,255,0.18),_transparent_55%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.12),_transparent_50%)]">
-      <header className="mx-auto max-w-6xl px-6 pt-12 pb-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">
-              PromotionalBot
-            </h1>
-            <p className="mt-2 max-w-xl text-gray-400">
-              Descontos validados automaticamente acima do limite mínimo, ordenados do maior para o menor.
-            </p>
-            {!error && promocoes.length > 0 && (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-200">
-                <span className="text-lg font-bold text-emerald-300">{promocoes.length}</span>
-                {promocoes.length === 1 ? 'produto em promoção' : 'produtos em promoção'}
-              </div>
-            )}
-          </div>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.18),_transparent_55%),radial-gradient(circle_at_bottom_right,_rgba(220,38,38,0.10),_transparent_50%)]">
+      <header className="mx-auto max-w-6xl px-6 pt-10 pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2">
-              <label className="text-sm text-gray-400 whitespace-nowrap">
-                Desconto mínimo
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-600 text-xl shadow-lg shadow-orange-500/30">
+              🔥
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+                GarimpoBot
+              </h1>
+              <p className="text-xs text-zinc-400 md:text-sm">
+                Descontos validados automaticamente, ordenados do maior para o menor
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {!error && promocoes.length > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1.5 text-xs font-medium text-orange-200">
+                <span className="text-sm font-bold text-orange-300">{promocoes.length}</span>
+                {promocoes.length === 1 ? 'oferta ativa' : 'ofertas ativas'}
+              </span>
+            )}
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs">
+              <label className="text-zinc-400 whitespace-nowrap">
+                Mín.
               </label>
               <input
                 type="text"
@@ -131,23 +137,23 @@ export default function App() {
                 value={thresholdInput}
                 onChange={(e) => setThresholdInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSaveThreshold()}
-                className="w-16 rounded-lg bg-white/10 px-2 py-1 text-center text-sm font-medium text-white outline-none focus:ring-1 focus:ring-fuchsia-500"
+                className="w-10 rounded bg-white/10 px-1.5 py-0.5 text-center font-medium text-white outline-none focus:ring-1 focus:ring-orange-500"
               />
-              <span className="text-sm text-gray-400">%</span>
+              <span className="text-zinc-400">%</span>
               <button
                 onClick={handleSaveThreshold}
                 disabled={savingThreshold}
-                className="rounded-lg bg-fuchsia-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-fuchsia-500 disabled:opacity-40"
+                className="rounded bg-orange-500 px-2 py-0.5 font-semibold text-white transition hover:bg-orange-400 disabled:opacity-40"
               >
-                {thresholdSaved ? 'Salvo ✓' : 'Salvar'}
+                {thresholdSaved ? '✓' : 'OK'}
               </button>
             </div>
             <button
               onClick={load}
               disabled={loading}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
             >
-              Atualizar
+              ↻ Atualizar
             </button>
           </div>
         </div>
